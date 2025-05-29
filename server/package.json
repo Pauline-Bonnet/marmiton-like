@@ -5,8 +5,11 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start:dev": "node --watch ./src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed": "node ./src/database/seeder.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "start": "node --watch dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +17,12 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.24",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }

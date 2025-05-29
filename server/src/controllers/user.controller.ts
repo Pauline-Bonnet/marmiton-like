@@ -1,4 +1,3 @@
-import { parse } from "dotenv";
 import { 
     findAllUsers, 
     findUserById, 
@@ -6,24 +5,26 @@ import {
     updateUserById,
     deleteUserById
 } from "../models/user.model.js";
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { NewUserInput, User } from "../types/user.js";
 
-export async function getAllUsers(req, res, next) {
+export const getAllUsers: RequestHandler<undefined, User[]> = async (req, res, next) => {
     try {
-        const users = await findAllUsers();
+        const users: User[] = await findAllUsers();
         res.json(users); // <-- V de View c'est ce truc là 
     } catch(err) {
         next(err);
     }
 }
 
-export async function getUserById(req, res, next) {
+export const getUserById = async (req: Request<{ id: string }>, res: Response<User | { error: string }>, next: NextFunction) => {
     try {
-        const parsedId = Number.parseInt(req.params.id);
+        const parsedId: number = Number.parseInt(req.params.id);
         if (isNaN(parsedId)) {
             return res.status(400).json({error: 'L\'id est censé être numérique'});
         }
 
-        const user = await findUserById(parsedId);
+        const user: User | undefined = await findUserById(parsedId);
         if (!user) {
             return res.status(404).json({error: 'Utilisateur introuvable'});
         }
@@ -33,53 +34,64 @@ export async function getUserById(req, res, next) {
     }
 }
 
-export async function createUser(req, res, next) {
+export const createUser = async (
+    req: Request<{}, {}, User>,
+    res: Response<User | { error: string }>,
+    next: NextFunction
+) => {
     const { firstname, lastname, pseudo, email, password, role } = req.body; 
 
     try {
         const newUser = await insertUser({firstname, lastname, pseudo, email, password, role});
         res.status(201).json(newUser);
-    } catch(err) {
+    } catch(err: any) {
         if (err.code === 'ER_DUP_ENTRY') {
             const duplicatedField = err.message.includes('email') ? 'email' : 'pseudo';
             return res.status(409).json({
                 error: `Veuillez entrer un autre ${duplicatedField}`
             });
         }
-
         next(err);
     }
 }
 
-export async function updateUser(req, res, next) {
+export const updateUser = async (
+    req: Request<{ id: string }, {}, Partial<User>>,
+    res: Response<User | { error: string }>,
+    next: NextFunction
+) => {
     try {
-        const parsedId = Number.parseInt(req.params.id);
+        const parsedId: number = Number.parseInt(req.params.id);
         if (isNaN(parsedId)) {
             return res.status(400).json({error: 'L\'id est censé être numérique'});
         }
-        const updatedUser = await updateUserById(parsedId, req.body);
-        
-        // TODO POURQUOI CETTE MERDE EST UNDEFINED
-        console.log('updatedUser', updatedUser)
+        const updatedUser: User | null = await updateUserById(parsedId, req.body);
 
         if (!updatedUser) {
             return res.status(404).json({error: 'Utilisateur introuvable'});
         }
         res.status(200).json(updatedUser);
-    } catch(err) {
+    } catch(err: any) {
         next(err);
     } 
 }
 
-export async function deleteUser(req, res, next) {
+export const deleteUser = async (
+    req: Request<{ id: string }>,
+    res: Response<void | { error: string }>,
+    next: NextFunction
+) => {
     try {
         const parsedId = Number.parseInt(req.params.id);
         if (isNaN(parsedId)) {
             return res.status(400).json({error: 'L\'id est censé être numérique'});
         }
-        await deleteUserById(parsedId);
-        res.sendStatus(204);
+        const deletedRows = await deleteUserById(parsedId);
+        if (deletedRows === 0) {
+            return res.status(404).json({error: 'Utilisateur introuvable'});
+        }
+        res.sendStatus(204); // 204 = succès, mais pas de contenu renvoyé
     } catch(err) {
-        next(err)
+        next(err);
     }
 }
