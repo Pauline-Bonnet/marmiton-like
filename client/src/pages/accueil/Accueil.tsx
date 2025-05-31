@@ -12,7 +12,7 @@ const Accueil = () => {
     const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/recipes/lastestRecipes") 
+    fetch("http://localhost:3000/api/recipes") 
       .then((res) => res.json())
       .then((data) => {
         setRecipes(data);

@@ -6,7 +6,7 @@ import {
     deleteUserById
 } from "../models/user.model.js";
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { NewUserInput, User } from "../types/user.js";
+import { NewUserInput, User, UserUpdateInput } from "../types/user.js";
 
 export const getAllUsers: RequestHandler<undefined, User[]> = async (req, res, next) => {
     try {
@@ -17,16 +17,18 @@ export const getAllUsers: RequestHandler<undefined, User[]> = async (req, res, n
     }
 }
 
-export const getUserById = async (req: Request<{ id: string }>, res: Response<User | { error: string }>, next: NextFunction) => {
+export const getUserById: RequestHandler<{ id: string }, User | { error: string }, any, any> = async (req, res, next): Promise<void> => {
     try {
         const parsedId: number = Number.parseInt(req.params.id);
         if (isNaN(parsedId)) {
-            return res.status(400).json({error: 'L\'id est censé être numérique'});
+            res.status(400).json({error: 'L\'id est censé être numérique'});
+            return;
         }
 
         const user: User | undefined = await findUserById(parsedId);
         if (!user) {
-            return res.status(404).json({error: 'Utilisateur introuvable'});
+            res.status(404).json({error: 'Utilisateur introuvable'});
+            return;
         }
         res.status(200).json(user);
     } catch(err) {
@@ -34,11 +36,7 @@ export const getUserById = async (req: Request<{ id: string }>, res: Response<Us
     }
 }
 
-export const createUser = async (
-    req: Request<{}, {}, User>,
-    res: Response<User | { error: string }>,
-    next: NextFunction
-) => {
+export const createUser: RequestHandler<{}, User | { error: string }, NewUserInput> = async (req, res, next) => {
     const { firstname, lastname, pseudo, email, password, role } = req.body; 
 
     try {
@@ -47,28 +45,31 @@ export const createUser = async (
     } catch(err: any) {
         if (err.code === 'ER_DUP_ENTRY') {
             const duplicatedField = err.message.includes('email') ? 'email' : 'pseudo';
-            return res.status(409).json({
+            res.status(409).json({ // le statut 409 est utilisé en cas de conflit
                 error: `Veuillez entrer un autre ${duplicatedField}`
             });
+            return;
         }
-        next(err);
+        next(err); // sinon on passe l'erreur au middleware d'erreur global
     }
 }
 
-export const updateUser = async (
-    req: Request<{ id: string }, {}, Partial<User>>,
-    res: Response<User | { error: string }>,
-    next: NextFunction
-) => {
+export const updateUser: RequestHandler<
+  { id: string }, // req.params
+  User | { error: string }, // res.body
+  UserUpdateInput // req.body
+> = async (req, res, next) => {
     try {
         const parsedId: number = Number.parseInt(req.params.id);
         if (isNaN(parsedId)) {
-            return res.status(400).json({error: 'L\'id est censé être numérique'});
+            res.status(400).json({error: 'L\'id est censé être numérique'});
+            return;
         }
-        const updatedUser: User | null = await updateUserById(parsedId, req.body);
 
+        const updatedUser: User | null = await updateUserById(parsedId, req.body);
         if (!updatedUser) {
-            return res.status(404).json({error: 'Utilisateur introuvable'});
+            res.status(404).json({error: 'Utilisateur introuvable'});
+            return;
         }
         res.status(200).json(updatedUser);
     } catch(err: any) {
@@ -76,19 +77,20 @@ export const updateUser = async (
     } 
 }
 
-export const deleteUser = async (
-    req: Request<{ id: string }>,
-    res: Response<void | { error: string }>,
-    next: NextFunction
-) => {
+export const deleteUser: RequestHandler<
+  { id: string },
+  { message: string } | { error: string }
+> = async (req, res, next) => {
     try {
         const parsedId = Number.parseInt(req.params.id);
         if (isNaN(parsedId)) {
-            return res.status(400).json({error: 'L\'id est censé être numérique'});
+            res.status(400).json({error: 'L\'id est censé être numérique'});
+            return;
         }
         const deletedRows = await deleteUserById(parsedId);
         if (deletedRows === 0) {
-            return res.status(404).json({error: 'Utilisateur introuvable'});
+            res.status(404).json({error: 'Utilisateur introuvable'});
+            return;
         }
         res.sendStatus(204); // 204 = succès, mais pas de contenu renvoyé
     } catch(err) {
