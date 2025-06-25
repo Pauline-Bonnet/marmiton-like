@@ -11,6 +11,11 @@ export interface Recipe {
     creation_date?: string;
 }
 
+export interface NewRecipe
+  extends Omit<Recipe, "recipe_id" | "creation_date"> {}
+
+export interface RecipeUpdate extends Partial<NewRecipe> {}
+
 export interface RecipeQueryParams {
     category?: string;
     maxTime?: number | null;
