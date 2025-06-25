@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS marmiton_db;
-CREATE DATABASE marmiton_db;
+DROP DATABASE IF EXISTS marmiton_db_test;
+CREATE DATABASE marmiton_db_test;
 
-USE marmiton_db;
+USE marmiton_db_test;
 
 CREATE TABLE user (
     user_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,

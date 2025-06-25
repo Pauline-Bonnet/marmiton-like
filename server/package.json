@@ -6,10 +6,10 @@
   "type": "module",
   "scripts": {
     "seed": "node ./src/database/seeder.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx src/server.ts",
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit",
+    "dev": "NODE_ENV=dev tsx src/server.ts",
     "build": "tsc",
-    "start": "node --watch dist/server.js"
+    "start": "NODE_ENV=prod node --watch dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,7 +23,13 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.15.24",
+    "@types/supertest": "^6.0.3",
+    "cross-env": "^7.0.3",
+    "jest": "^30.0.0",
+    "supertest": "^7.1.1",
+    "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"

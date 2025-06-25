@@ -5,8 +5,8 @@ import {
     getUserById, 
     updateUser,
     deleteUser
-} from '../controllers/user.controller.js';
-import { userCreationValidationRules, userUpdateValidationRules, validate } from '../middlewares/user-validation.js';
+} from '../controllers/user.controller';
+import { userCreationValidationRules, userUpdateValidationRules, validate } from '../middlewares/user-validation';
 
 const router = express.Router();
 

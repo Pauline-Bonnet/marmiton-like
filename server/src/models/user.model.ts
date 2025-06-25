@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket  } from "mysql2";
-import database from "./db.js";
-import { NewUserInput, User, UserUpdateInput } from "../types/user.js";
+import database from "./db";
+import { NewUserInput, User, UserUpdateInput } from "../types/user";
 
 export async function findAllUsers(): Promise<User[]> {
     const [rows] = await database.query<User[]>(`SELECT user_id, firstname, lastname, pseudo, email FROM user`);

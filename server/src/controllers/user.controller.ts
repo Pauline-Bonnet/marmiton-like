@@ -4,9 +4,9 @@ import {
     insertUser,
     updateUserById,
     deleteUserById
-} from "../models/user.model.js";
+} from "../models/user.model";
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { NewUserInput, User, UserUpdateInput } from "../types/user.js";
+import { NewUserInput, User, UserUpdateInput } from "../types/user";
 
 export const getAllUsers: RequestHandler<undefined, User[]> = async (req, res, next) => {
     try {
