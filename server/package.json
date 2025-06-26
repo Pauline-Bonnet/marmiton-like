@@ -7,23 +7,27 @@
   "scripts": {
     "seed": "node ./src/database/seeder.js",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit",
-    "dev": "NODE_ENV=dev tsx src/server.ts",
+    "dev": "cross-env NODE_ENV=dev tsx src/server.ts",
     "build": "tsc",
-    "start": "NODE_ENV=prod node --watch dist/server.js"
+    "start": "node --watch dist/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/cors": "^2.8.18",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.2",
     "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.24",
     "@types/supertest": "^6.0.3",
     "cross-env": "^7.0.3",

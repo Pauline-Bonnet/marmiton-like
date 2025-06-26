@@ -1,6 +1,6 @@
 import { ResultSetHeader, RowDataPacket  } from "mysql2";
 import database from "./db";
-import { NewUserInput, User, UserUpdateInput } from "../types/user";
+import { FullUser, NewUserInput, User, UserUpdateInput } from "../types/user";
 
 export async function findAllUsers(): Promise<User[]> {
     const [rows] = await database.query<User[]>(`SELECT user_id, firstname, lastname, pseudo, email FROM user`);
@@ -13,6 +13,14 @@ export async function findUserById(id: number): Promise<User | undefined> {
         WHERE user_id = ?
         `, [id]);
     return rows[0];
+};
+
+export async function findUserByEmail(email: string): Promise<FullUser | undefined> {
+    const [rows] = await database.query<FullUser[]>(`
+            SELECT * FROM user
+            WHERE email = ?
+        `, [email]);
+    return rows[0];
 }
 
 export async function insertUser({
@@ -20,10 +28,10 @@ export async function insertUser({
     lastname, 
     pseudo, 
     email, 
-    password, 
+    hashedPassword, 
     role}: NewUserInput): Promise<User> {
     const fields = ['firstname', 'lastname', 'pseudo', 'password', 'email'];
-    const values = [firstname, lastname, pseudo, password, email];
+    const values = [firstname, lastname, pseudo, hashedPassword, email];
 
     if (role) {
         fields.push('role');

@@ -36,23 +36,23 @@ export const getUserById: RequestHandler<{ id: string }, User | { error: string 
     }
 }
 
-export const createUser: RequestHandler<{}, User | { error: string }, NewUserInput> = async (req, res, next) => {
-    const { firstname, lastname, pseudo, email, password, role } = req.body; 
+// export const createUser: RequestHandler<{}, User | { error: string }, NewUserInput> = async (req, res, next) => {
+//     const { firstname, lastname, pseudo, email, password, role } = req.body; 
 
-    try {
-        const newUser = await insertUser({firstname, lastname, pseudo, email, password, role});
-        res.status(201).json(newUser);
-    } catch(err: any) {
-        if (err.code === 'ER_DUP_ENTRY') {
-            const duplicatedField = err.message.includes('email') ? 'email' : 'pseudo';
-            res.status(409).json({ // le statut 409 est utilisé en cas de conflit
-                error: `Veuillez entrer un autre ${duplicatedField}`
-            });
-            return;
-        }
-        next(err); // sinon on passe l'erreur au middleware d'erreur global
-    }
-}
+//     try {
+//         const newUser = await insertUser({firstname, lastname, pseudo, email, password, role});
+//         res.status(201).json(newUser);
+//     } catch(err: any) {
+//         if (err.code === 'ER_DUP_ENTRY') {
+//             const duplicatedField = err.message.includes('email') ? 'email' : 'pseudo';
+//             res.status(409).json({ // le statut 409 est utilisé en cas de conflit
+//                 error: `Veuillez entrer un autre ${duplicatedField}`
+//             });
+//             return;
+//         }
+//         next(err); // sinon on passe l'erreur au middleware d'erreur global
+//     }
+// }
 
 export const updateUser: RequestHandler<
   { id: string }, // req.params

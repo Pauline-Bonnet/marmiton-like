@@ -1,5 +1,14 @@
 import { RowDataPacket } from "mysql2";
 
+export interface FullUser extends RowDataPacket { 
+  user_id: number;
+  firstname: string;
+  lastname: string;
+  pseudo: string;
+  email: string;
+}
+
+
 // User représente la structure complète des données utilisateur qu'on attend lors d'un fetch
 export interface User extends RowDataPacket { 
   user_id: number;
@@ -15,7 +24,7 @@ export interface NewUserInput {
   lastname: string;
   pseudo: string;
   email: string;
-  password: string;
+  hashedPassword: string;
   role?: 'admin' | 'user'; 
 }
 

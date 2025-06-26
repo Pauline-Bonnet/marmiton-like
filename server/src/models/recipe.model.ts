@@ -9,7 +9,6 @@ export async function findRecipes ({
     page, 
     limit, 
 }: RecipeQueryParams): Promise<Recipe[]> {
-    console.log('KIKOO')
     let sql = 'SELECT * FROM recipe AS r';
     const params: (string | number)[] = [];
     const conditions: string[] = [];

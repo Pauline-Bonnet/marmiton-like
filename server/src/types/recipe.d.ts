@@ -6,7 +6,7 @@ export interface Recipe {
     preparation_time: number;
     cooking_time: number;
     nb_eaters: number;
-    image: string;
+    image?: string;
     user_id: number;
     creation_date?: string;
 }

@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import authRouter from './routes/auth.routes';
 import userRouter from './routes/user.routes';
 import recipeRouter from './routes/recipe.routes';
 import { loggerMiddleware } from './middlewares/logger';
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
     next();
 })
 
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/recipes', recipeRouter);
 
